@@ -1,13 +1,13 @@
-name: "Matt Learns R"
+name: "wigglepuff"
 navbar:
-  title: "Matt Learns R"
+  title: "Explore:"
   left:
     - text: "Home"
       href: index.html
-    - text: "R Basics"
-      href: RBasics.html
-    - text: "R functions"
-      href: RFunctions.html
+    - text: "Airbnb Seattle"
+      href: airbnbseattle.html
+    - text: "About"
+      href: about.html
     - text: "Links"
       href: Links.html
 output_dir: "docs"

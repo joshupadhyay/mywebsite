@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Airbnb Seattle</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Explore:</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="airbnbseattle.html">Airbnb Seattle</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="Links.html">Links</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Airbnb Seattle</h1>
+
+</div>
+
+
+<pre class="r"><code>listings = read.csv(&quot;/Users/joshupadhyay/Downloads/seattle/listings.csv&quot;)
+reviews = read.csv(&quot;/Users/joshupadhyay/Downloads/seattle/reviews.csv&quot;)
+calendar = read.csv(&quot;/Users/joshupadhyay/Downloads/seattle/calendar.csv&quot;)</code></pre>
+<div id="including-plots" class="section level2">
+<h2>Including Plots</h2>
+<p>You can also embed plots, for example:</p>
+<pre class="r"><code>reviewed_listings$date &lt;- as.Date(reviewed_listings$date)</code></pre>
+<pre class="r"><code>reviews$date &lt;- as.Date(reviews$date)
+
+
+reviews &lt;- reviews %&gt;%
+  mutate(month = format(date, &quot;%m&quot;), year = format(date, &quot;%Y&quot;))
+
+
+
+
+
+n_reviewers &lt;- reviews %&gt;%
+  group_by(month) %&gt;%
+  summarize(nreviewers = n()) %&gt;%
+  ggplot() + geom_point(aes(x = month, y = nreviewers)) + labs(title = &#39;Number of Reviewers by Month&#39;, subtitle = &#39;Counted, separated by month&#39;)</code></pre>
+<pre class="r"><code>n_reviewers</code></pre>
+<p><img src="airbnbseattle_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Given that AirBnb review requests are sent to people immediately after they stay in the booking, I’ve made the assumption that all reviews have been made right after people exited their AirBnb. Based on this, it seems as though August is the time that most people stay in an Airbnb.</p>
+<pre class="r"><code>#dummy var.. probably a MUCH faster way to do this exists
+calendar &lt;- calendar %&gt;% 
+  mutate(avail_n = replace(calendar$availible, calendar$available == &#39;f&#39;, 0))
+calendar$avail_n &lt;- replace_na(calendar$avail_n, 1)
+
+calendar$date &lt;- ymd(calendar$date)</code></pre>
+<pre class="r"><code>calendar &lt;- calendar %&gt;%
+  mutate(d_month = format(date, &quot;%m&quot;), d_year = format(date, &quot;%y&quot;))</code></pre>
+<pre class="r"><code>booked_month &lt;- calendar %&gt;%
+  group_by(listing_id, d_month) %&gt;%
+  summarize(percent_booked = 1 - (sum(avail_n) / (365)))
+
+# Added up all the days the Airbnb was availible and divided by a year, then did 1 minus that to get the percentage booked
+
+booked_month</code></pre>
+<pre><code>## # A tibble: 45,816 x 3
+## # Groups:   listing_id [?]
+##    listing_id d_month percent_booked
+##         &lt;int&gt; &lt;chr&gt;            &lt;dbl&gt;
+##  1       3335 01               0.995
+##  2       3335 02               0.997
+##  3       3335 03               0.915
+##  4       3335 04               0.918
+##  5       3335 05               0.915
+##  6       3335 06               0.918
+##  7       3335 07               0.915
+##  8       3335 08               0.915
+##  9       3335 09               0.918
+## 10       3335 10               0.915
+## # ... with 45,806 more rows</code></pre>
+<pre class="r"><code>id3335 &lt;- booked_month %&gt;%
+  filter(listing_id == 3335) %&gt;%
+  ggplot() + geom_point(aes(d_month, y = percent_booked)) + labs(title = &quot;ID 3335&quot;)
+
+id2800448 &lt;- booked_month %&gt;%
+  filter(listing_id == 2800448) %&gt;%
+  ggplot() + geom_point(aes(d_month, y = percent_booked)) + labs(title = &quot;ID 2800448&quot;)
+
+id2830174 &lt;- booked_month %&gt;%
+  filter(listing_id == 2830174) %&gt;%
+  ggplot() + geom_point(aes(d_month, y = percent_booked)) + labs(title = &quot;ID 2830174&quot;)
+
+id6411259 &lt;- booked_month %&gt;%
+  filter(listing_id == 6411259) %&gt;%
+  ggplot() + geom_point(aes(d_month, y = percent_booked)) + labs(title = &quot;ID 6411259&quot;)
+
+
+
+grid.arrange(id3335,id2800448, id2830174,id6411259)</code></pre>
+<p><img src="airbnbseattle_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Interestingly, various AirBnbs are booked up at different times of the year - I wonder if this matters depending on location? (All 4 also seem to be highly booked up in January). To be honest, I didn’t expect a low of approx 91% - I’m sure these AirBnb hosts are making good money.</p>
+<pre class="r"><code>book_percentage &lt;- booked_month %&gt;%
+  group_by(d_month) %&gt;%
+  summarize(agg = mean(percent_booked)) %&gt;%
+  ggplot() + geom_point(aes(d_month, agg)) + labs(x = &quot;Month&quot;, y = &quot;Average % Booked&quot;, title = &quot;How Full are AirBnbs In Seattle?&quot;, subtitle = &quot;Jan 17, 2016 - 2017&quot;)</code></pre>
+<p>Interestingly, if we assume people write a review right after they stay, (speaking from AirBnb experience, they send an email right after you leave - if you don’t write a review then, you most likely won’t) we can see two different trends between the “number of reviewers” and the fullness of AirBnbs:</p>
+<pre class="r"><code>grid.arrange(book_percentage, n_reviewers)</code></pre>
+<p><img src="airbnbseattle_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>While AirBnbs are more full in January, it appears that there are more reviewers in August - this means that people have shorter stays in August, resulting in the decrease in average % booked, but a higher number of reviewers.</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
