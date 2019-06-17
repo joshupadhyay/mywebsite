@@ -11,3 +11,6 @@ navbar:
     - text: "Links"
       href: Links.html
 output_dir: "docs"
+output:
+  html_document:
+    theme: cosmo
