@@ -11,3 +11,7 @@ forcats
 lubridate
 gridExtra
 bindrcpp
+mapview
+ggmap
+leaflet
+wesanderson
