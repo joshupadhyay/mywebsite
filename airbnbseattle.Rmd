@@ -9,13 +9,14 @@ output:
     toc_depth: 1
     #code_folding: hide
 ---
-
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(lubridate)
 library(gridExtra)
+library(mapview)
+library(ggmap)
+library(leaflet)
 ```
 
 
@@ -25,40 +26,78 @@ reviews = read.csv("/Users/joshupadhyay/Downloads/seattle/reviews.csv")
 calendar = read.csv("/Users/joshupadhyay/Downloads/seattle/calendar.csv")
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-reviewed_listings <- listings %>%
-  left_join(reviews, by = c('id' = 'listing_id'))
-```
-
-
 ```{r}
-reviewed_listings$date <- as.Date(reviewed_listings$date)
+#cleaning up listings price
+
+listings$price = as.numeric(gsub("\\$", "", listings$price))
+listings$weekly_price = as.numeric(gsub("\\$", "", listings$weekly_price))
+listings$monthly_price = as.numeric(gsub("\\$", "", listings$monthly_price))
+listings$cleaning_fee = as.numeric(gsub("\\$", "", listings$cleaning_fee))
+
 
 ```
 
-```{r, cache= TRUE}
-reviews$date <- as.Date(reviews$date)
+```{r, echo=FALSE}
 
+#cleaning up reviews
+reviews$date <- as.Date(reviews$date)
 
 reviews <- reviews %>%
   mutate(month = format(date, "%m"), year = format(date, "%Y"))
 
+```
 
 
+```{r, cache=TRUE}
+
+reviewed_listings <- listings %>%
+  left_join(reviews, by = c('id' = 'listing_id'))
+
+
+
+```
+
+
+# An Overview:
+```{r, cache = TRUE}
+housing_points <- reviewed_listings %>%
+  distinct(longitude, latitude, .keep_all = TRUE)
+
+
+qmplot(longitude, latitude, data = housing_points, zoom = 10) 
+
+#figure out how to change alpha and point size, also you used to use a better map package.. mapview? edit this either way... also have it interactive so it looks good 
+
+```
+
+
+```{r}
+library(wesanderson)
+
+
+ptypes = c("Apartment", "House", "Cabin", "Condominium", "Camper/RV", "Bungalow", "Townhouse", "Loft", "Boat", "Bed & Breakfast", "Other", "Dorm", "Treehouse", "Yurt", "Chalet", "Tent")
+
+
+leaflet(housing_points) %>%
+  addProviderTiles(providers$CartoDB) %>%
+  setView(-122.3672, 47.61068 , zoom = 10.5) %>%
+  addCircleMarkers(housing_points$longitude, housing_points$latitude, weight = 3, radius = 2, fillOpacity = 0.4, popup = housing_points$property_type, color = wes_palette("Royal1", 16, type = c('continuous')))
+```
+
+
+The data represents a year's worth of Airbnb bookings and reviews starting from Jan 16th, 2016. Using the data provided, I aim to leverage the data to help both hosts and guests. 
+
+
+
+# When are Airbnbs the busiest? 
+
+```{r, cache= TRUE}
 
 
 n_reviewers <- reviews %>%
   group_by(month) %>%
   summarize(nreviewers = n()) %>%
   ggplot() + geom_point(aes(x = month, y = nreviewers)) + labs(title = 'Number of Reviewers by Month', subtitle = 'Counted, separated by month')
-
-
-
-
 
 ```
 
@@ -112,13 +151,10 @@ id6411259 <- booked_month %>%
   filter(listing_id == 6411259) %>%
   ggplot() + geom_point(aes(d_month, y = percent_booked)) + labs(title = "ID 6411259")
 
-
-
 grid.arrange(id3335,id2800448, id2830174,id6411259)
 ```
 
-Interestingly, various AirBnbs are booked up at different times of the year - I wonder if this matters depending on location? (All 4 also seem to be highly booked up in January). To be honest, I didn't expect a low of approx 91% - I'm sure these AirBnb hosts are making good money. 
-
+Interestingly, various AirBnbs are booked up at different times of the year - I wonder if this matters depending on location? (All 4 also seem to be highly booked up in January). To be honest, I didn't expect a low of only 91% - I'm sure these AirBnb hosts are making good money. 
 
 
 ```{r}
@@ -134,6 +170,19 @@ Interestingly, if we assume people write a review right after they stay, (speaki
 grid.arrange(book_percentage, n_reviewers)
 ```
 
-While AirBnbs are more full in January, it appears that there are more reviewers in August - this means that people have shorter stays in August, resulting in the decrease in average % booked, but a higher number of reviewers. 
+While Airbnbs are more full in January, it appears that there are more unique reviewers in August. This may indicate a higher turnover rate in August with shorter stays per guest compared to fewer, longer-staying guests in Janurary. 
+
+# How much to charge / How much to pay?
+
+Let's quickly break down the average price by neighborhood (I'll deal with amenities and so forth later): 
+```{r}
+reviewed_listings %>%
+  distinct(id, .keep_all = TRUE) %>%
+  group_by(neighbourhood, property_type) %>%
+  summarize(avg_p = mean(price))
+
+```
+
+
 
 
