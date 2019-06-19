@@ -26,7 +26,7 @@ reviews = read.csv("/Users/joshupadhyay/Downloads/seattle/reviews.csv")
 calendar = read.csv("/Users/joshupadhyay/Downloads/seattle/calendar.csv")
 ```
 
-```{r}
+```{r, echo=FALSE}
 #cleaning up listings price
 
 listings$price = as.numeric(gsub("\\$", "", listings$price))
@@ -48,7 +48,7 @@ reviews <- reviews %>%
 ```
 
 
-```{r, cache=TRUE}
+```{r, cache=TRUE, echo = FALSE}
 
 reviewed_listings <- listings %>%
   left_join(reviews, by = c('id' = 'listing_id'))
@@ -58,32 +58,43 @@ reviewed_listings <- listings %>%
 ```
 
 
-# An Overview:
-```{r, cache = TRUE}
-housing_points <- reviewed_listings %>%
-  distinct(longitude, latitude, .keep_all = TRUE)
+```{r, cache=TRUE, echo=FALSE}
+housing_points %>%
+  group_by(property_type) %>%
+  summarize(num = n()) %>%
+  arrange(desc(num))
+
+#choose top 5 property types to display 
+
+poptypes <- c('House', 'Apartment', 'Townhouse', 'Condonminium', 'Loft')
+
+housemap <- housing_points %>%
+  filter(property_type == poptypes) %>%
+  distinct(longitude, latitude, property_type)
 
 
-qmplot(longitude, latitude, data = housing_points, zoom = 10) 
-
-#figure out how to change alpha and point size, also you used to use a better map package.. mapview? edit this either way... also have it interactive so it looks good 
 
 ```
 
 
-```{r}
+
+
+```{r, echo = FALSE}
 library(wesanderson)
 
+#FF7C08, #DAF7A6, #15EA63  , #1576EA  , #B715EA
 
-ptypes = c("Apartment", "House", "Cabin", "Condominium", "Camper/RV", "Bungalow", "Townhouse", "Loft", "Boat", "Bed & Breakfast", "Other", "Dorm", "Treehouse", "Yurt", "Chalet", "Tent")
-
+factpal <- colorFactor(palette = c("red", "green", "blue", "wheat", "black"), levels = levels(housemap$property_type))
 
 leaflet(housing_points) %>%
   addProviderTiles(providers$CartoDB) %>%
   setView(-122.3672, 47.61068 , zoom = 10.5) %>%
-  addCircleMarkers(housing_points$longitude, housing_points$latitude, weight = 3, radius = 2, fillOpacity = 0.4, popup = housing_points$property_type, color = wes_palette("Royal1", 16, type = c('continuous')))
-```
+  addCircleMarkers(housemap$longitude, housemap$latitude, 
+                   weight = 1, radius = 3, fillOpacity = 0.4, 
+                   color = ~factpal(housemap$property_type), popup = housemap$property_type)
 
+  
+```
 
 The data represents a year's worth of Airbnb bookings and reviews starting from Jan 16th, 2016. Using the data provided, I aim to leverage the data to help both hosts and guests. 
 
@@ -91,7 +102,7 @@ The data represents a year's worth of Airbnb bookings and reviews starting from 
 
 # When are Airbnbs the busiest? 
 
-```{r, cache= TRUE}
+```{r, cache= TRUE, echo = FALSE}
 
 
 n_reviewers <- reviews %>%
@@ -102,29 +113,23 @@ n_reviewers <- reviews %>%
 ```
 
 
-```{r}
+```{r, echo = FALSE}
 n_reviewers
 ```
 
 Given that AirBnb review requests are sent to people immediately after they stay in the booking, I've made the assumption that all reviews have been made right after people exited their AirBnb. Based on this, it seems as though August is the time that most people stay in an Airbnb. 
 
-```{r}
+```{r, echo = FALSE, cache = TRUE}
 #dummy var.. probably a MUCH faster way to do this exists
 calendar <- calendar %>% 
   mutate(avail_n = replace(calendar$availible, calendar$available == 'f', 0))
 calendar$avail_n <- replace_na(calendar$avail_n, 1)
 
 calendar$date <- ymd(calendar$date)
-```
 
-```{r}
 calendar <- calendar %>%
   mutate(d_month = format(date, "%m"), d_year = format(date, "%y"))
 
-```
-
-
-```{r}
 booked_month <- calendar %>%
   group_by(listing_id, d_month) %>%
   summarize(percent_booked = 1 - (sum(avail_n) / (365)))
@@ -132,9 +137,10 @@ booked_month <- calendar %>%
 # Added up all the days the Airbnb was availible and divided by a year, then did 1 minus that to get the percentage booked
 
 booked_month
+
 ```
 
-```{r, cache=TRUE}
+```{r, cache=TRUE, echo = FALSE}
 id3335 <- booked_month %>%
   filter(listing_id == 3335) %>%
   ggplot() + geom_point(aes(d_month, y = percent_booked)) + labs(title = "ID 3335")
@@ -157,7 +163,7 @@ grid.arrange(id3335,id2800448, id2830174,id6411259)
 Interestingly, various AirBnbs are booked up at different times of the year - I wonder if this matters depending on location? (All 4 also seem to be highly booked up in January). To be honest, I didn't expect a low of only 91% - I'm sure these AirBnb hosts are making good money. 
 
 
-```{r}
+```{r, echo = FALSE}
 book_percentage <- booked_month %>%
   group_by(d_month) %>%
   summarize(agg = mean(percent_booked)) %>%
@@ -166,7 +172,7 @@ book_percentage <- booked_month %>%
 
 
 Interestingly, if we assume people write a review right after they stay, (speaking from AirBnb experience, they send an email right after you leave - if you don't write a review then, you most likely won't) we can see two different trends between the "number of reviewers" and the fullness of AirBnbs:
-```{r}
+```{r, echo = FALSE}
 grid.arrange(book_percentage, n_reviewers)
 ```
 
