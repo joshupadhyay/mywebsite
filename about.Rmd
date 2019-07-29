@@ -1,15 +1,3 @@
----
-title: "About"
-output:
-  html_document:
-    toc: true
-    toc_float: true
-    collapsed: false
-    number_sections: false
-    toc_depth: 1
-    #code_folding: hide
----
-
-#work in progress
-
-My life story is [here](http://www.script-o-rama.com/movie_scripts/a1/bee-movie-script-transcript-seinfeld.html)
+version https://git-lfs.github.com/spec/v1
+oid sha256:68b050763b8ab55b2e38eebaa9589c09ee9d03480478d56045aa5051cee24f06
+size 304

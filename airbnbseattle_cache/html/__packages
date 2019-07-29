@@ -15,3 +15,11 @@ mapview
 ggmap
 leaflet
 wesanderson
+kableExtra
+stopwords
+lexicon
+textclean
+NLP
+tm
+RColorBrewer
+wordcloud
