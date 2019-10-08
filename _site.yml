@@ -9,9 +9,9 @@ navbar:
     - text: "About"
       href: about.html
     - text: "Climbing Success"
-      href: Links.html
-    - text: "change this it aint showing up anyway"
       href: climbing_success.html
+    - text: "Extra"
+      href: Links.html
 output_dir: "docs"
 output:
   html_document:
