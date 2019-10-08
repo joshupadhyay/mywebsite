@@ -8,8 +8,10 @@ navbar:
       href: airbnbseattle.html
     - text: "About"
       href: about.html
-    - text: "Links"
+    - text: "Climbing Success"
       href: Links.html
+    - text: "change this it aint showing up anyway"
+      href: climbing_success.html
 output_dir: "docs"
 output:
   html_document:
